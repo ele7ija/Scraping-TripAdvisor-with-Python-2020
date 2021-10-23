@@ -26,7 +26,7 @@ Code to paste into terminal: python3 path_to_downloaded_script/things_to_do_scra
 
 What I used:
   - Python 3.8.2
-  - Selenium 3.141.0
+  - Selenium selenium 4.0.0 `pip install selenium==4.0.0`
   - Safari 14.0.1
   - Visual Studio Code 1.51.1
   - Macbook Pro 13" M1 2020 with macOS Big Sur 11.0.1
