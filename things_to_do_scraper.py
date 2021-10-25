@@ -5,8 +5,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 
+# before all this, you have to have a chromedriver.exe file in the directory where this script is.
+# depending on the version of the Chrome browser you have (Settings->About Chrome->Version), 
+# download the file from https://chromedriver.chromium.org/downloads
+
 # default path to file to store data (file doesn't need to exist (directory does), if it does, it'll be overwritten)
-path_to_file = "/home/bp/tmp/reviews2.csv"
+path_to_file = ".\\reviews.csv" # current directory
+# also correct: path_to_file = "C:\\Users\\Bojan\\Scraping-TripAdvisor-with-Python-2020\\reviews.csv"
+# also correct: path_to_file = "C:\\Users\\Bojan\\Desktop\\reviews.csv"
 
 # default number of scraped pages (put 1000 if you want all of the reviews)
 num_page = 1000
@@ -21,7 +27,7 @@ if len(sys.argv) == 4:
     url = sys.argv[3]
 
 # open the file to save the review
-csvFile = open(path_to_file, 'w', encoding="utf-8")
+csvFile = open(path_to_file, 'w', encoding="utf-8", newline='')
 csvWriter = csv.writer(csvFile)
 csvWriter.writerow(['Date', 'Rating', 'Type', 'Title', 'Review'])
 
