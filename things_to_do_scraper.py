@@ -29,7 +29,7 @@ if len(sys.argv) == 4:
 # open the file to save the review
 csvFile = open(path_to_file, 'w', encoding="utf-8", newline='')
 csvWriter = csv.writer(csvFile)
-csvWriter.writerow(['Date', 'Rating', 'Type', 'Title', 'Review'])
+csvWriter.writerow(['Date', 'Rating', 'Type', 'Helpful votes', 'Title', 'Review'])
 
 # import the webdriver
 driver = webdriver.Chrome()
@@ -60,15 +60,21 @@ for i in range(0, num_page):
         title = container[j].find_element(By.XPATH, ".//div[contains(@data-test-target, 'review-title')]").text
         review = container[j].find_element(By.XPATH, ".//q").text.replace("\n", "  ")
         date = " ".join(dates[j].text.split(" ")[-2:])
-        trip_type = ""
         try:
             trip_type_elem = container[j].find_element(By.XPATH, ".//span[@class='trip_type_label']/..")
             trip_type = trip_type_elem.text.replace("Trip type: ", "")
             trip_type = "".join(trip_type.split(" ")[-1:]) if trip_type != "" else ""
         except selenium.common.exceptions.NoSuchElementException:
+            trip_type = ""
+            pass
+        try:
+            helpful_vote_elem = container[j].find_element(By.XPATH, ".//span[contains(string(), 'Helpful vote')]")
+            helpful_votes = int("".join(helpful_vote_elem.text.split(" ")[0])) if helpful_vote_elem.text != "" else 0
+        except selenium.common.exceptions.NoSuchElementException:
+            helpful_votes = 0
             pass
 
-        csvWriter.writerow([date, rating, trip_type, title, review])
+        csvWriter.writerow([date, rating, trip_type, helpful_votes, title, review])
 
     try:
         driver.find_element(By.XPATH, './/a[@class="ui_button nav next primary "]').click()
