@@ -15,9 +15,10 @@ path_to_file = ".\\reviews.csv" # current directory
 # also correct: path_to_file = "C:\\Users\\Bojan\\Desktop\\reviews.csv"
 
 # default number of scraped pages (put 1000 if you want all of the reviews)
-num_page = 1000
+num_page = 2
 
-# default tripadvisor website of hotel or things to do (attraction/monument) 
+# default tripadvisor website of hotel or things to do (attraction/monument)
+# url = "https://www.tripadvisor.com/Hotel_Review-g60763-d1218720-Reviews-or25-The_Standard_High_Line-New_York_City_New_York.html#REVIEWS"
 url = "https://www.tripadvisor.com/Hotel_Review-g295380-d14037312-Reviews-Sheraton_Novi_Sad-Novi_Sad_Vojvodina.html"
 
 # if you pass the inputs in the command line
@@ -29,7 +30,7 @@ if len(sys.argv) == 4:
 # open the file to save the review
 csvFile = open(path_to_file, 'w', encoding="utf-8", newline='')
 csvWriter = csv.writer(csvFile)
-csvWriter.writerow(['Date', 'Rating', 'Type', 'Helpful votes', 'Title', 'Review'])
+csvWriter.writerow(['Username', 'Date', 'Rating', 'Type', 'Helpful votes', 'Title', 'Review'])
 
 # import the webdriver
 driver = webdriver.Chrome()
@@ -50,6 +51,7 @@ for i in range(0, num_page):
     time.sleep(3)
 
     container = driver.find_elements(By.XPATH, "//div[@data-reviewid]")
+    usernames = driver.find_elements(By.XPATH, "//a[contains(@class, 'ui_header_link')]")
     dates = driver.find_elements(By.XPATH, "//span[contains(string(), 'Date of stay:')]")
     dates = dates[::2]
 
@@ -59,6 +61,8 @@ for i in range(0, num_page):
             .get_attribute("class").split("_")[3][:-1]
         title = container[j].find_element(By.XPATH, ".//div[contains(@data-test-target, 'review-title')]").text
         review = container[j].find_element(By.XPATH, ".//q").text.replace("\n", "  ")
+        href = usernames[j].get_attribute("href")
+        username = "".join(usernames[j].get_attribute("href").split("/")[-1:])
         date = " ".join(dates[j].text.split(" ")[-2:])
         try:
             trip_type_elem = container[j].find_element(By.XPATH, ".//span[@class='trip_type_label']/..")
@@ -74,7 +78,7 @@ for i in range(0, num_page):
             helpful_votes = 0
             pass
 
-        csvWriter.writerow([date, rating, trip_type, helpful_votes, title, review])
+        csvWriter.writerow([username, date, rating, trip_type, helpful_votes, title, review])
 
     try:
         driver.find_element(By.XPATH, './/a[@class="ui_button nav next primary "]').click()
