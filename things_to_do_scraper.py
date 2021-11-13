@@ -12,12 +12,12 @@ import time
 # download the file from https://chromedriver.chromium.org/downloads
 
 # default path to file to store data (file doesn't need to exist (directory does), if it does, it'll be overwritten)
-path_to_file = ".\\reviews.csv" # current directory
+path_to_file = "reviews.csv" # current directory
 # also correct: path_to_file = "C:\\Users\\Bojan\\Scraping-TripAdvisor-with-Python-2020\\reviews.csv"
 # also correct: path_to_file = "C:\\Users\\Bojan\\Desktop\\reviews.csv"
 
 # default number of scraped pages (put 1000 if you want all of the reviews)
-num_page = 1000
+num_page = 60
 
 # default tripadvisor website of hotel or things to do (attraction/monument)
 # url = "https://www.tripadvisor.com/Hotel_Review-g60763-d1218720-Reviews-or25-The_Standard_High_Line-New_York_City_New_York.html#REVIEWS"
@@ -48,15 +48,19 @@ for i in range(0, num_page):
     try:
         element = WebDriverWait(driver, 20).until(
             EC.element_to_be_clickable((By.XPATH, ".//div[contains(@data-test-target, 'expand-review')]")))
+        time.sleep(2)
         element.click()
         # driver.find_element(By.XPATH, ".//div[contains(@data-test-target, 'expand-review')]").click()
-    except selenium.common.exceptions.StaleElementReferenceException:
-        pass  # print("Clicked the Read More element...")
+    except selenium.common.exceptions.StaleElementReferenceException \
+           or selenium.common.exceptions.ElementClickInterceptedException:
+        print("\tWARNING: Couldn't click on 'Read More' meaning I couldn't get information about the type of review."
+              "\n\tYou should rerun the script.")
+        pass
     except selenium.common.exceptions.TimeoutException:
         print("Couldn't get to the Read More element, stopping here.")
         break
 
-    container = WebDriverWait(driver, 10).until(
+    container = WebDriverWait(driver, 20).until(
         EC.presence_of_all_elements_located((By.XPATH, "//div[@data-reviewid]"))
     )
     usernames = driver.find_elements(By.XPATH, "//a[contains(@class, 'ui_header_link')]")
