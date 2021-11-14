@@ -17,10 +17,10 @@ path_to_file = "reviews.csv" # current directory
 # also correct: path_to_file = "C:\\Users\\Bojan\\Desktop\\reviews.csv"
 
 # default number of scraped pages (put 1000 if you want all of the reviews)
-num_page = 60
+num_page = 50
 
 # default tripadvisor website of hotel or things to do (attraction/monument)
-# url = "https://www.tripadvisor.com/Hotel_Review-g60763-d1218720-Reviews-or25-The_Standard_High_Line-New_York_City_New_York.html#REVIEWS"
+# url = "https://www.tripadvisor.com/Hotel_Review-g274887-d276671-Reviews-InterContinental_Budapest-Budapest_Central_Hungary.html"
 url = "https://www.tripadvisor.com/Hotel_Review-g295380-d14037312-Reviews-Sheraton_Novi_Sad-Novi_Sad_Vojvodina.html"
 
 # if you pass the inputs in the command line
@@ -39,16 +39,16 @@ driver = webdriver.Chrome()
 print("Loading initial page...")
 driver.get(url)
 print("...initial page loaded")
-time.sleep(2)
+time.sleep(4)
 
 for i in range(0, num_page):
     print("Visiting page: ", i+1)
 
     # expand the review
     try:
+        time.sleep(2)
         element = WebDriverWait(driver, 20).until(
             EC.element_to_be_clickable((By.XPATH, ".//div[contains(@data-test-target, 'expand-review')]")))
-        time.sleep(2)
         element.click()
         # driver.find_element(By.XPATH, ".//div[contains(@data-test-target, 'expand-review')]").click()
     except selenium.common.exceptions.StaleElementReferenceException \
